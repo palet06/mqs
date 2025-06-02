@@ -1,5 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@theme {
+  --color-hibihibi:"#f0f0f0";
+   
+  }
 
 @custom-variant dark (&:is(.dark *));
 
