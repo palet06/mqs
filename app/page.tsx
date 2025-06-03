@@ -1,4 +1,4 @@
-
+{/* burası da server component olsun aynı zamanda login sayfası olacak login sayfası client olan bir login form olacak */}
 
 const nesnem = {
   adi:"murat",

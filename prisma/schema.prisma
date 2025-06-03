@@ -11,13 +11,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 // schema.prisma
 
 enum HttpMethod {
   GET
   POST
- 
 }
 
 enum ValueEnum {
@@ -32,40 +30,54 @@ enum EndpointStatusEnum {
   OFFLINE
 }
 
+model Base {
+  id      Int    @id @default(autoincrement()) // INTEGER
+  baseUrl String // TEXT
+}
+
 model Institution {
-  id        Int        @id @default(autoincrement()) // INTEGER
-  name      String     // TEXT
-  logo      String     // TEXT (Logo URL veya dosya yolu)
-  createdAt DateTime   @default(now()) // DATETIME
-  updatedAt DateTime   @updatedAt // DATETIME
-  endpoints Endpoint[]  // İlişkili endpointler
+  id        Int                @id @default(autoincrement()) // INTEGER
+  name      String // TEXT
+  logo      String // TEXT (Logo URL veya dosya yolu)
+  createdAt DateTime           @default(now()) // DATETIME
+  updatedAt DateTime           @updatedAt // DATETIME
+  endpoints Endpoint[] // İlişkili endpointler
   status    EndpointStatusEnum
 }
 
 model Endpoint {
-  id               Int               @id @default(autoincrement()) // INTEGER
-  url              String            // TEXT
-  authorization    String?           // TEXT (Opsiyonel)
-  headers          String?           // TEXT (JSON verisi TEXT olarak saklanacak)
-  requestParams    RequestParam[]  // Bir endpoint'e ait birden fazla parametre olabilir        // TEXT (JSON verisi TEXT olarak saklanacak)
-  status           EndpointStatusEnum // Enum ile Endpoint Durumu
-  method           HttpMethod        // Enum ile HTTP Yöntemi
-  institutionId    Int               // INTEGER (Foreign key)
-  institution      Institution       @relation(fields: [institutionId], references: [id])
-  createdAt        DateTime          @default(now()) // DATETIME
-  updatedAt        DateTime          @updatedAt // DATETIME
-
-  
+  id            Int                @id @default(autoincrement()) // INTEGER
+  name          String             @unique // TEXT
+  url           String // TEXT
+  authorization String? // TEXT (Opsiyonel)
+  headers       Header[] // TEXT (JSON verisi TEXT olarak saklanacak)
+  requestParams RequestParam[] // Bir endpoint'e ait birden fazla parametre olabilir        // TEXT (JSON verisi TEXT olarak saklanacak)
+  status        EndpointStatusEnum // Enum ile Endpoint Durumu
+  method        HttpMethod // Enum ile HTTP Yöntemi
+  institutionId Int // INTEGER (Foreign key)
+  institution   Institution        @relation(fields: [institutionId], references: [id])
+  createdAt     DateTime           @default(now()) // DATETIME
+  updatedAt     DateTime           @updatedAt // DATETIME
 }
 
-
-model RequestParam {
-  id          Int       @id @default(autoincrement())
-  key         String    // Parametre adı
+model Header {
+  id        Int    @id @default(autoincrement())
+  headerkey String // Parametre adı
 
   // Aşağıdaki alanlardan yalnızca biri doldurulur (diğerleri null olur)
-  value       ValueEnum   // Parametre değeri (String)
+  headervalue String // Parametre değeri (String)
 
-  endpointId  Int
-  endpoint    Endpoint  @relation(fields: [endpointId], references: [id])
+  endpointId Int
+  endpoint   Endpoint @relation(fields: [endpointId], references: [id])
+}
+
+model RequestParam {
+  id  Int    @id @default(autoincrement())
+  key String // Parametre adı
+
+  // Aşağıdaki alanlardan yalnızca biri doldurulur (diğerleri null olur)
+  value ValueEnum // Parametre değeri (String)
+
+  endpointId Int
+  endpoint   Endpoint @relation(fields: [endpointId], references: [id])
 }

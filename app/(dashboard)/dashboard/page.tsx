@@ -1,3 +1,4 @@
+{/* bunu server component yap verileri çek ve kurumları listeleyen client componente gönder*/}
 import { AppSidebar } from "@/components/dashboardcomponents/app-sidebar";
 import { NavActions } from "@/components/dashboardcomponents/nav-actions";
 import {
@@ -11,7 +12,6 @@ import {
   CardHeader,
   CardContent,
   CardTitle,
-  CardDescription,
   CardFooter,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -20,133 +20,112 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import {
-  
-  Camera,
-  Code,
-  CuboidIcon,
-  FileText,
-  Layers,
-  LayoutGrid,
-  Palette,
-  Sparkles,
-  Star,
-  Type,
-  Video,
-} from "lucide-react";
+import { Recycle, Star } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import Image from "next/image";
 
 const DashboardPage = () => {
   const apps = [
     {
-      name: "PixelMaster",
-      icon: "/logolar/meb/milli-egitim-logo.png",
-      description: "Advanced image editing and composition",
+      name: "Dışişleri Bakanlığı",
+      icon: "/logolar/disisleri-logo.png",
+      description: "birtakım işler",
       category: "Creative",
       recent: true,
       new: false,
       progress: 100,
     },
     {
-      name: "VectorPro",
-      icon: "/logolar/egm/egm-logo.png",
+      name: "Milli Eğitim Bakanlığı",
+      icon: "/logolar/meb-logo.png",
       description: "Professional vector graphics creation",
       category: "Creative",
       recent: true,
-      new: false,
+      new: true,
       progress: 100,
     },
     {
-      name: "VideoStudio",
-      icon: <Video className="text-pink-500" />,
-      description: "Cinematic video editing and production",
-      category: "Video",
-      recent: true,
-      new: false,
-      progress: 100,
-    },
-    {
-      name: "MotionFX",
-      icon: <Sparkles className="text-blue-500" />,
-      description: "Stunning visual effects and animations",
-      category: "Video",
-      recent: false,
-      new: false,
-      progress: 100,
-    },
-    {
-      name: "PageCraft",
-      icon: <Layers className="text-red-500" />,
-      description: "Professional page design and layout",
+      name: "YTB",
+      icon: "/logolar/ytb-logo.png",
+      description: "Professional vector graphics creation",
       category: "Creative",
-      recent: false,
-      new: false,
-      progress: 100,
-    },
-    {
-      name: "UXFlow",
-      icon: <LayoutGrid className="text-fuchsia-500" />,
-      description: "Intuitive user experience design",
-      category: "Design",
-      recent: false,
+      recent: true,
       new: true,
-      progress: 85,
-    },
-    {
-      name: "PhotoLab",
-      icon: <Camera className="text-teal-500" />,
-      description: "Advanced photo editing and organization",
-      category: "Photography",
-      recent: false,
-      new: false,
       progress: 100,
     },
     {
-      name: "DocMaster",
-      icon: <FileText className="text-red-600" />,
-      description: "Document editing and management",
-      category: "Document",
-      recent: false,
-      new: false,
-      progress: 100,
-    },
-    {
-      name: "WebCanvas",
-      icon: <Code className="text-emerald-500" />,
-      description: "Web design and development",
-      category: "Web",
-      recent: false,
+      name: "Gelir İdaresi Başkanlığı",
+      icon: "/logolar/gib-logo.png",
+      description: "Professional vector graphics creation",
+      category: "Creative",
+      recent: true,
       new: true,
-      progress: 70,
+      progress: 100,
     },
     {
-      name: "3DStudio",
-      icon: <CuboidIcon className="text-indigo-500" />,
-      description: "3D modeling and rendering",
-      category: "3D",
-      recent: false,
+      name: "N.V.İ",
+      icon: "/logolar/nvi-logo.png",
+      description: "Professional vector graphics creation",
+      category: "Creative",
+      recent: true,
       new: true,
-      progress: 60,
-    },
-    {
-      name: "FontForge",
-      icon: <Type className="text-amber-500" />,
-      description: "Typography and font creation",
-      category: "Typography",
-      recent: false,
-      new: false,
       progress: 100,
     },
     {
-      name: "ColorPalette",
-      icon: <Palette className="text-purple-500" />,
-      description: "Color scheme creation and management",
-      category: "Design",
-      recent: false,
-      new: false,
+      name: "Göç İdaresi Başkanlığı",
+      icon: "/logolar/goc-logo.png",
+      description: "Professional vector graphics creation",
+      category: "Creative",
+      recent: true,
+      new: true,
       progress: 100,
     },
+    {
+      name: "İşkur",
+      icon: "/logolar/iskur-logo.png",
+      description: "Professional vector graphics creation",
+      category: "Creative",
+      recent: true,
+      new: true,
+      progress: 100,
+    },
+    {
+      name: "PTT",
+      icon: "/logolar/ptt-logo.png",
+      description: "Professional vector graphics creation",
+      category: "Creative",
+      recent: true,
+      new: true,
+      progress: 100,
+    },
+    {
+      name: "SGK",
+      icon: "/logolar/sgk-logo.png",
+      description: "Professional vector graphics creation",
+      category: "Creative",
+      recent: true,
+      new: true,
+      progress: 100,
+    },
+    {
+      name: "YÖK",
+      icon: "/logolar/yok-logo.png",
+      description: "Professional vector graphics creation",
+      category: "Creative",
+      recent: true,
+      new: true,
+      progress: 100,
+    },
+    {
+      name: "EGM",
+      icon: "/logolar/egm-logo.png",
+      description: "Professional vector graphics creation",
+      category: "Creative",
+      recent: true,
+      new: true,
+      progress: 100,
+    },
+    
   ];
   return (
     <SidebarProvider>
@@ -173,88 +152,60 @@ const DashboardPage = () => {
             <NavActions />
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 px-4 py-10">
-          <div className="bg-muted/50 mx-auto h-24 w-full max-w-6xl rounded-xl" />
-          <div className="bg-muted/50 mx-auto h-full w-full max-w-6xl rounded-xl">
-            <section className="space-y-4">
+        <div className="flex flex-1 flex-col gap-4 px-4 py-3">
+          <div className="bg-muted/50 mx-auto h-24 w-full max-w-[1408px] rounded-xl flex flex-col justify-center ">
+            <h2 className="text-3xl font-semibold text-center ">
+              Dış Kurum Sorgulama Servisleri
+            </h2>
+          </div>
+          <div className="bg-muted/50 mx-auto h-[700px] w-full max-w-[1408px] rounded-xl overflow-y-scroll">
+            <section className="space-y-4 p-5 ">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-semibold">Recent Apps</h2>
-                <Button variant="ghost" className="rounded-2xl">
-                  View All
+                <Button variant="ghost" className="rounded-2xl ml-auto">
+                  Yenile
+                  <Recycle />
                 </Button>
               </div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                <div>
-                  <Card className="overflow-hidden rounded-3xl border-2 hover:border-primary/50 transition-all duration-300">
-                    <CardHeader className="pb-2">
-                      <div className="flex items-center justify-between">
-                        <Image
-                          src={apps[0].icon.toString()}
-                          height={50}
-                          width={50}
-                          alt="disisleri"
-                        />
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {apps.map((app, i) => (
+                  <div key={i}>
+                    <Card className="flex flex-col gap-1 overflow-hidden  rounded-3xl border-2 hover:border-primary/50 transition-all duration-300">
+                      <Star className="h-4 w-4 ml-auto mr-4" />
+                      <CardHeader className="pb-1 justify-center">
+                        <div className="flex items-center justify-between">
+                          {typeof app.icon === "string" ? (
+                            <Image
+                              src={app.icon}
+                              height={100}
+                              width={100}
+                              alt={app.name}
+                            />
+                          ) : (
+                            <span className="flex items-center justify-center w-[100px] h-[100px]">
+                              {app.icon}
+                            </span>
+                          )}
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pb-1">
+                        <CardTitle className="text-lg text-center">
+                          {app.name}
+                        </CardTitle>
+                        {/* <CardDescription>{apps[0].description}</CardDescription> */}
+                      </CardContent>
+                      <CardFooter>
                         <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-2xl"
+                          variant="outline"
+                          className="w-full rounded-2xl cursor-pointer"
                         >
-                          <Star className="h-4 w-4" />
+                          Git
                         </Button>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pb-2">
-                      <CardTitle className="text-lg">{apps[0].name}</CardTitle>
-                      <CardDescription>{apps[0].description}</CardDescription>
-                    </CardContent>
-                    <CardFooter>
-                      <Button
-                        variant="secondary"
-                        className="w-full rounded-2xl"
-                      >
-                        Open
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </div>
-                <div>
-                  <Card className=" overflow-hidden rounded-3xl border-2 hover:border-primary/50 transition-all duration-300">
-                    <CardHeader className="pb-2">
-                      <div className="flex items-center justify-between">
-                        <Image
-                          src={apps[1].icon.toString()}
-                          height={50}
-                          width={50}
-                          alt="disisleri"
-                        />
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-2xl"
-                        >
-                          <Star className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pb-2">
-                      <CardTitle className="text-lg">{apps[0].name}</CardTitle>
-                      <CardDescription>{apps[0].description}</CardDescription>
-                    </CardContent>
-                    <CardFooter>
-                      <Button
-                        variant="secondary"
-                        className="w-full rounded-2xl"
-                      >
-                        Open
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </div>
+                      </CardFooter>
+                    </Card>
+                  </div>
+                ))}
               </div>
-
-             
             </section>
-           
           </div>
         </div>
       </SidebarInset>
