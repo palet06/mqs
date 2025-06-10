@@ -23,11 +23,13 @@ enum ValueEnum {
   NUMBER
   BOOLEAN
   DATE
+  OBJECT
 }
 
 enum EndpointStatusEnum {
   ONLINE
   OFFLINE
+  UNKNOWN
 }
 
 model Base {
@@ -49,9 +51,10 @@ model Endpoint {
   id            Int                @id @default(autoincrement()) // INTEGER
   name          String             @unique // TEXT
   url           String // TEXT
-  authorization String? // TEXT (Opsiyonel)
+  
   headers       Header[] // TEXT (JSON verisi TEXT olarak saklanacak)
   requestParams RequestParam[] // Bir endpoint'e ait birden fazla parametre olabilir        // TEXT (JSON verisi TEXT olarak saklanacak)
+  responseParams ResponseParam[]
   status        EndpointStatusEnum // Enum ile Endpoint Durumu
   method        HttpMethod // Enum ile HTTP Yöntemi
   institutionId Int // INTEGER (Foreign key)
@@ -72,6 +75,18 @@ model Header {
 }
 
 model RequestParam {
+  id  Int    @id @default(autoincrement())
+  key String // Parametre adı
+
+  // Aşağıdaki alanlardan yalnızca biri doldurulur (diğerleri null olur)
+  value ValueEnum // Parametre değeri (String)
+
+  endpointId Int
+  endpoint   Endpoint @relation(fields: [endpointId], references: [id])
+}
+
+
+model ResponseParam {
   id  Int    @id @default(autoincrement())
   key String // Parametre adı
 
