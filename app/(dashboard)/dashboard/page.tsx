@@ -1,12 +1,7 @@
-{/* bunu server component yap verileri çek ve kurumları listeleyen client componente gönder*/}
-import { AppSidebar } from "@/components/dashboardcomponents/app-sidebar";
-import { NavActions } from "@/components/dashboardcomponents/nav-actions";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
+{
+  /* bunu server component yap verileri çek ve kurumları listeleyen client componente gönder*/
+}
+
 import {
   Card,
   CardHeader,
@@ -14,12 +9,7 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+
 import { Recycle, Star } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import Image from "next/image";
@@ -125,91 +115,64 @@ const DashboardPage = () => {
       new: true,
       progress: 100,
     },
-    
   ];
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-14 shrink-0 items-center gap-2">
-          <div className="flex flex-1 items-center gap-2 px-3">
-            <SidebarTrigger />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbPage className="line-clamp-1">
-                    Project Management & Task Tracking
-                  </BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+    <div className="flex flex-1 flex-col gap-4 px-4 py-3">
+      <div className="bg-muted/50 mx-auto h-24 w-full max-w-[1408px] rounded-xl flex flex-col justify-center ">
+        <h2 className="text-3xl font-semibold text-center ">
+          Dış Kurum Sorgulama Servisleri
+        </h2>
+      </div>
+      <div className="bg-muted/50 mx-auto h-[700px] w-full max-w-[1408px] rounded-xl overflow-y-scroll">
+        <section className="space-y-4 p-5 ">
+          <div className="flex items-center justify-between">
+            <Button variant="ghost" className="rounded-2xl ml-auto">
+              Yenile
+              <Recycle />
+            </Button>
           </div>
-          <div className="ml-auto px-3">
-            <NavActions />
-          </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 px-4 py-3">
-          <div className="bg-muted/50 mx-auto h-24 w-full max-w-[1408px] rounded-xl flex flex-col justify-center ">
-            <h2 className="text-3xl font-semibold text-center ">
-              Dış Kurum Sorgulama Servisleri
-            </h2>
-          </div>
-          <div className="bg-muted/50 mx-auto h-[700px] w-full max-w-[1408px] rounded-xl overflow-y-scroll">
-            <section className="space-y-4 p-5 ">
-              <div className="flex items-center justify-between">
-                <Button variant="ghost" className="rounded-2xl ml-auto">
-                  Yenile
-                  <Recycle />
-                </Button>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {apps.map((app, i) => (
+              <div key={i}>
+                <Card className="flex flex-col gap-1 overflow-hidden  rounded-3xl border-2 hover:border-primary/50 transition-all duration-300">
+                  <Star className="h-4 w-4 ml-auto mr-4" />
+                  <CardHeader className="pb-1 justify-center">
+                    <div className="flex items-center justify-between">
+                      {typeof app.icon === "string" ? (
+                        <Image
+                          src={app.icon}
+                          height={100}
+                          width={100}
+                          alt={app.name}
+                        />
+                      ) : (
+                        <span className="flex items-center justify-center w-[100px] h-[100px]">
+                          {app.icon}
+                        </span>
+                      )}
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pb-1">
+                    <CardTitle className="text-lg text-center">
+                      {app.name}
+                    </CardTitle>
+                    {/* <CardDescription>{apps[0].description}</CardDescription> */}
+                  </CardContent>
+                  <CardFooter>
+                    <Button
+                      variant="outline"
+                      className="w-full rounded-2xl cursor-pointer"
+                    >
+                      Git
+                    </Button>
+                  </CardFooter>
+                </Card>
               </div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {apps.map((app, i) => (
-                  <div key={i}>
-                    <Card className="flex flex-col gap-1 overflow-hidden  rounded-3xl border-2 hover:border-primary/50 transition-all duration-300">
-                      <Star className="h-4 w-4 ml-auto mr-4" />
-                      <CardHeader className="pb-1 justify-center">
-                        <div className="flex items-center justify-between">
-                          {typeof app.icon === "string" ? (
-                            <Image
-                              src={app.icon}
-                              height={100}
-                              width={100}
-                              alt={app.name}
-                            />
-                          ) : (
-                            <span className="flex items-center justify-center w-[100px] h-[100px]">
-                              {app.icon}
-                            </span>
-                          )}
-                        </div>
-                      </CardHeader>
-                      <CardContent className="pb-1">
-                        <CardTitle className="text-lg text-center">
-                          {app.name}
-                        </CardTitle>
-                        {/* <CardDescription>{apps[0].description}</CardDescription> */}
-                      </CardContent>
-                      <CardFooter>
-                        <Button
-                          variant="outline"
-                          className="w-full rounded-2xl cursor-pointer"
-                        >
-                          Git
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  </div>
-                ))}
-              </div>
-            </section>
+            ))}
           </div>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+        </section>
+      </div>
+    </div>
   );
 };
 
