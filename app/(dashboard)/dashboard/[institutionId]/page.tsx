@@ -1,9 +1,10 @@
 "use client";
+
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,15 +14,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+
+
 import { Info, Play, Recycle } from "lucide-react";
 import Image from "next/image";
 import React from "react";
@@ -67,24 +64,21 @@ const Institution = () => {
                     className="rounded-2xl bg-transparent border-white text-white hover:bg-white/10"
                     variant="outline"
                   >
-                    Open
+                    Servis Seçimi
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-56">
-                  <DropdownMenuLabel>Panel Position</DropdownMenuLabel>
+                  <DropdownMenuLabel>Servis İsmi</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuRadioGroup
                     value={position}
                     onValueChange={setPosition}
                   >
                     <DropdownMenuRadioItem value="top">
-                      Top
+                      Ülkeye Giriş/Çıkış Bilgileri
                     </DropdownMenuRadioItem>
                     <DropdownMenuRadioItem value="bottom">
-                      Bottom
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="right">
-                      Right
+                      Pasaport Bilgileri
                     </DropdownMenuRadioItem>
                   </DropdownMenuRadioGroup>
                 </DropdownMenuContent>
@@ -93,39 +87,39 @@ const Institution = () => {
           </div>
         </div>
       </div>
-      <div className="space-y-6">
+      <div className="pt-6">
         <Card>
-          <CardHeader>
-            <CardTitle>Query Configuration</CardTitle>
+          <CardHeader className="border-b">
+            <CardTitle>Sorgulama Bilgileri</CardTitle>
           </CardHeader>
+
           <CardContent className="space-y-4">
-            <Alert>
-              <Info className="h-4 w-4" />
-              <AlertDescription>
-                Please select a corporate from the sidebar to configure queries.
-              </AlertDescription>
-            </Alert>
+            <div className="flex flex-row gap-6 w-full justify-between">
+              <div className="flex flex-col gap-2 w-1/3">
+                <div className="space-y-2">
+                  <Label htmlFor="query-type">Ülke Kodu</Label>
+                  <Input name="query-type" defaultValue="" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="query-t">Pasaport Numarası</Label>
+                  <Input name="query-t" defaultValue="" />
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="query-type">Query Type</Label>
-              <Select>
-                <SelectTrigger id="query-type">
-                  <SelectValue placeholder="Select query type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="asfd"></SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                
+              </div>
+              <Separator
+                orientation="vertical"
+                className="data-[orientation=vertical]:h-auto"
+              />
 
-            <div className="flex items-center space-x-2">
-              <Checkbox id="multiple-query" checked={false} />
-              <Label htmlFor="multiple-query">Multiple Query</Label>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="query-params">parametre</Label>
-              <Textarea id="query-params" disabled={true} />
+              <div className="flex flex-col gap-2 w-2/3">
+                <Alert variant="destructive">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                   buraya 
+                  </AlertDescription>
+                </Alert>
+              </div>
             </div>
 
             <Button className="w-full">
