@@ -10,7 +10,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 
-import { Recycle, Star } from "lucide-react";
+import { BadgeCheck, Recycle } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import Image from "next/image";
 
@@ -135,7 +135,7 @@ const DashboardPage = () => {
             {apps.map((app, i) => (
               <div key={i}>
                 <Card className="flex flex-col gap-1 overflow-hidden  rounded-3xl border-2 hover:border-primary/50 transition-all duration-300">
-                  <Star className="h-4 w-4 ml-auto mr-4" />
+                  <BadgeCheck className="text-green-600  h-5 w-5 ml-auto mr-4" />
                   <CardHeader className="pb-1 justify-center">
                     <div className="flex items-center justify-between">
                       {typeof app.icon === "string" ? (

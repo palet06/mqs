@@ -21,7 +21,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-  SidebarSeparator,
+  
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 import { NavUser } from "./nav-user";
@@ -105,7 +105,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar className="border-r-0" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
+        <SidebarMenu className="mb-4">
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <a href={"/dashboard"}>
@@ -125,7 +125,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        <SidebarSeparator />
+       
         <NavMain items={data.navMain} />
       </SidebarHeader>
       <SidebarContent>

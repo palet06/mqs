@@ -1,6 +1,9 @@
 "use client";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +13,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Recycle } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Info, Play, Recycle } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
@@ -49,7 +61,7 @@ const Institution = () => {
                 <Recycle />
                 Kontol Et
               </Button>
-              <DropdownMenu >
+              <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     className="rounded-2xl bg-transparent border-white text-white hover:bg-white/10"
@@ -77,10 +89,51 @@ const Institution = () => {
                   </DropdownMenuRadioGroup>
                 </DropdownMenuContent>
               </DropdownMenu>
-              
             </div>
           </div>
         </div>
+      </div>
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Query Configuration</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert>
+              <Info className="h-4 w-4" />
+              <AlertDescription>
+                Please select a corporate from the sidebar to configure queries.
+              </AlertDescription>
+            </Alert>
+
+            <div className="space-y-2">
+              <Label htmlFor="query-type">Query Type</Label>
+              <Select>
+                <SelectTrigger id="query-type">
+                  <SelectValue placeholder="Select query type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="asfd"></SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox id="multiple-query" checked={false} />
+              <Label htmlFor="multiple-query">Multiple Query</Label>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="query-params">parametre</Label>
+              <Textarea id="query-params" disabled={true} />
+            </div>
+
+            <Button className="w-full">
+              <Play className="mr-2 h-4 w-4" />
+              Execute Query
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
