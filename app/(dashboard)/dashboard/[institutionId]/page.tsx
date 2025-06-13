@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +18,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-
 
 import { Info, Play, Recycle } from "lucide-react";
 import Image from "next/image";
@@ -104,8 +104,6 @@ const Institution = () => {
                   <Label htmlFor="query-t">Pasaport Numarası</Label>
                   <Input name="query-t" defaultValue="" />
                 </div>
-
-                
               </div>
               <Separator
                 orientation="vertical"
@@ -115,10 +113,11 @@ const Institution = () => {
               <div className="flex flex-col gap-2 w-2/3">
                 <Alert variant="destructive">
                   <Info className="h-4 w-4" />
-                  <AlertDescription>
-                   buraya 
-                  </AlertDescription>
+                  <AlertDescription>buraya</AlertDescription>
                 </Alert>
+              </div>
+              <div>
+              
               </div>
             </div>
 
