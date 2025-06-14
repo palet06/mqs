@@ -111,9 +111,9 @@ const Institution = () => {
               />
 
               <div className="flex flex-col gap-2 w-2/3">
-                <Alert variant="destructive">
+                <Alert variant="warning">
                   <Info className="h-4 w-4" />
-                  <AlertDescription>buraya</AlertDescription>
+                  <AlertDescription >buraya</AlertDescription>
                 </Alert>
               </div>
               <div>
