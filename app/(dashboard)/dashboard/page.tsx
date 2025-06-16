@@ -12,12 +12,12 @@ const getInstitues = async () => {
     const son = await response.json();
 
     if (!son.apiSuccess) {
-      throw new Error("Network response was not ok");
+      throw new Error("Ağ hatası");
     }
 
     return son.institues as Institution[];
   } catch (error) {
-    console.error("Error fetching institutions:", error);
+    console.error("Kurumlar getirilirken hata oluştu:", error);
   }
 };
 
@@ -25,7 +25,12 @@ const DashboardPage = async () => {
   const institues = await getInstitues();
 
   if (!institues || institues.length === 0) {
-    return <div>bok</div>;
+    return <div className="flex flex-col w-full items-center justify-center">
+      <h2>
+
+      Tanımlı kurum bulunamadı
+      </h2>
+      </div>;
   } else {
     return (
       <div className="flex flex-1 flex-col gap-4 px-4 py-3">
