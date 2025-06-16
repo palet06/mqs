@@ -1,10 +1,10 @@
 "use client";
 
+import CodeFormatter from "@/components/CodeFormatter";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 
 import {
   DropdownMenu,
@@ -95,7 +95,7 @@ const Institution = () => {
 
           <CardContent className="space-y-4">
             <div className="flex flex-row gap-6 w-full justify-between">
-              <div className="flex flex-col gap-2 w-1/3">
+              <div className="flex flex-col gap-2 w-1/3 justify-between">
                 <div className="space-y-2">
                   <Label htmlFor="query-type">Ülke Kodu</Label>
                   <Input name="query-type" defaultValue="" />
@@ -104,27 +104,25 @@ const Institution = () => {
                   <Label htmlFor="query-t">Pasaport Numarası</Label>
                   <Input name="query-t" defaultValue="" />
                 </div>
+                <Button className="w-full">
+                  <Play className="mr-2 h-4 w-4" />
+                  Sorgu Başlat
+                </Button>
               </div>
               <Separator
                 orientation="vertical"
                 className="data-[orientation=vertical]:h-auto"
               />
 
-              <div className="flex flex-col gap-2 w-2/3">
-                <Alert variant="warning">
+              <div className="flex flex-col gap-2 w-2/3 ">
+                <Alert className="w-full" variant="default">
                   <Info className="h-4 w-4" />
-                  <AlertDescription >buraya</AlertDescription>
+                  <AlertDescription>Postman Önizlemesi</AlertDescription>
                 </Alert>
+                <CodeFormatter jsonString='{"deneme":"hello", "isAlive":true}' />
               </div>
-              <div>
-              
-              </div>
+              <div></div>
             </div>
-
-            <Button className="w-full">
-              <Play className="mr-2 h-4 w-4" />
-              Execute Query
-            </Button>
           </CardContent>
         </Card>
       </div>
