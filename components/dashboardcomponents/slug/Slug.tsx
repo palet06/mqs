@@ -4,7 +4,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Prisma } from "@/generated/prisma/client"
+import { Prisma } from "@/generated/prisma/client";
 
 import {
   DropdownMenu,
@@ -19,11 +19,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
-import { Info, Play, Recycle } from "lucide-react";
+import { Info, Loader, Play, Recycle } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
-type InstitutionWithAllRelations = Prisma.InstitutionGetPayload<{include:{endpoints:{include:{headers:true,requestParams:true}}}}>;
+type InstitutionWithAllRelations = Prisma.InstitutionGetPayload<{
+  include: { endpoints: { include: { headers: true; requestParams: true } } };
+}>;
 
 const getInstitue = async (id: number) => {
   try {
@@ -47,7 +50,12 @@ const getInstitue = async (id: number) => {
 };
 
 const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
-  const [institue, setInstitue] = useState<InstitutionWithAllRelations|null>(null);
+  const [institue, setInstitue] = useState<InstitutionWithAllRelations | null>(
+    null
+  );
+  const [status, setStatus] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [renew, setRenew] = useState<boolean>(false);
 
   useEffect(() => {
     const getInstitueFromMethod = async () => {
@@ -63,6 +71,34 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
     getInstitueFromMethod();
   }, []);
 
+  useEffect(() => {
+    const getStatus = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `/api/getStatus?institutionId=${singleInstitutionId}`,
+          {
+            method: "GET",
+            cache: "no-cache",
+          }
+        );
+        const data = await response.json();
+
+        if (!data.apiSuccess) {
+          throw new Error("API cevabı başarısız oldu");
+        }
+
+        setStatus(data.sonuc.success);
+        setLoading(false);
+      } catch (error) {
+        console.error("Veriler getirilirken hata oluştu.", error);
+        setLoading(false);
+      }
+    };
+
+    getStatus();
+  }, [renew]);
+
   const [position, setPosition] = useState("bottom");
   return (
     <div className="p-5">
@@ -75,7 +111,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
               <div className="absolute inset-8 rounded-full bg-white/30" />
               <div className="absolute inset-8 rounded-full bg-white/30 flex flex-col items-center justify-center">
                 <Image
-                  src={institue?.logo?institue.logo:"/logolar/deneme.png"}
+                  src={institue?.logo ? institue.logo : "/logolar/deneme.png"}
                   height={150}
                   width={150}
                   alt="logo"
@@ -84,18 +120,34 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
             </div>
           </div>
           <div className="space-y-4">
-            <Badge className="bg-green-700 text-white hover:bg-white/30 rounded-xl">
-              Hello
-            </Badge>
+            {loading ? (
+              <Loader className="text-white  hover:bg-white/30 rounded-xl animate-spin" />
+            ) : (
+              <Badge
+                className={`${
+                  status ? "bg-green-700" : "bg-red-700"
+                } text-white hover:bg-white/30 rounded-xl`}
+              >
+                Hello
+              </Badge>
+            )}
+
             <h2 className="text-3xl font-bold">{institue?.name}</h2>
             <p className="max-w-[600px] text-white/80">
               Lütfen sorgulama yapacağınız servisi seçiniz
             </p>
             <div className="flex flex-wrap gap-3">
-              <Button className="rounded-2xl bg-white text-indigo-700 hover:bg-white/90">
-                <Recycle />
-                Kontol Et
-              </Button>
+              <Link
+                onClick={() => setRenew((prev) => !prev)}
+                className="rounded-2xl bg-white text-indigo-700 hover:bg-indigo-200 cursor-pointer"
+                href={""}
+              >
+                <Button className="rounded-2xl bg-white text-indigo-700  hover:bg-indigo-200 cursor-pointer">
+                  <Recycle />
+                  Kontol Et
+                </Button>
+              </Link>
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -142,7 +194,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                   <Label htmlFor="query-t">Pasaport Numarası</Label>
                   <Input name="query-t" defaultValue="" />
                 </div>
-                <Button className="w-full">
+                <Button variant="success" className="w-full ">
                   <Play className="mr-2 h-4 w-4" />
                   Sorgu Başlat
                 </Button>

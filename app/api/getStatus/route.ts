@@ -35,6 +35,7 @@ export async function GET(req: NextRequest) {
       );
 
       const sonuc = await isOnline.json();
+      
 
       return NextResponse.json({ apiSuccess: true, sonuc });
     }
