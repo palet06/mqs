@@ -28,6 +28,11 @@ type InstitutionWithAllRelations = Prisma.InstitutionGetPayload<{
   include: { endpoints: { include: { headers: true; requestParams: true } } };
 }>;
 
+type DynamicInstitutionDto = {
+
+}
+
+
 const getInstitue = async (id: number) => {
   try {
     const response = await fetch(
@@ -63,6 +68,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
         const sonuc = await getInstitue(singleInstitutionId);
 
         setInstitue(sonuc);
+        setPosition(sonuc.endpoints[0]?.name || "");
       } catch (error) {
         console.error("Kurum bilgisi alınırken hata oluştu:", error);
       }
@@ -89,6 +95,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
         }
 
         setStatus(data.sonuc.success);
+      
         setLoading(false);
       } catch (error) {
         console.error("Veriler getirilirken hata oluştu.", error);
@@ -99,7 +106,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
     getStatus();
   }, [renew]);
 
-  const [position, setPosition] = useState("bottom");
+  const [position, setPosition] = useState<string|"">(institue?.endpoints[0]?.name || "");
   return (
     <div className="p-5">
       <div className="overflow-hidden rounded-3xl bg-gradient-to-r from-gray-600 via-cyan-950 to-blue-950 p-8 text-white">
@@ -164,12 +171,24 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                     value={position}
                     onValueChange={setPosition}
                   >
-                    <DropdownMenuRadioItem value="top">
-                      Ülkeye Giriş/Çıkış Bilgileri
+
+
+                    {
+                      institue?.endpoints.map((endpoint) => (
+                        <DropdownMenuRadioItem
+                          key={endpoint.id}
+                          value={endpoint.name}
+                        >
+                          {endpoint.name}
+                        </DropdownMenuRadioItem>
+                      ))
+                    }
+                    {/* <DropdownMenuRadioItem value={position}>
+                      {position}
                     </DropdownMenuRadioItem>
                     <DropdownMenuRadioItem value="bottom">
                       Pasaport Bilgileri
-                    </DropdownMenuRadioItem>
+                    </DropdownMenuRadioItem> */}
                   </DropdownMenuRadioGroup>
                 </DropdownMenuContent>
               </DropdownMenu>
