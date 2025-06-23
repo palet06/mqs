@@ -28,9 +28,6 @@ type InstitutionWithAllRelations = Prisma.InstitutionGetPayload<{
   include: { endpoints: { include: { headers: true; requestParams: true } } };
 }>;
 
-type DynamicInstitutionDto = {
-
-}
 
 
 const getInstitue = async (id: number) => {
@@ -68,7 +65,11 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
         const sonuc = await getInstitue(singleInstitutionId);
 
         setInstitue(sonuc);
-        setPosition(sonuc.endpoints[0]?.name || "");
+        
+        
+        setSelectedEndpoint(sonuc.endpoints[0]?.name || "");
+        
+        
       } catch (error) {
         console.error("Kurum bilgisi alınırken hata oluştu:", error);
       }
@@ -77,7 +78,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
     getInstitueFromMethod();
   }, []);
 
-  useEffect(() => {
+  useEffect(() => { // hello bilgisi alınıyor
     const getStatus = async () => {
       setLoading(true);
       try {
@@ -106,7 +107,8 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
     getStatus();
   }, [renew]);
 
-  const [position, setPosition] = useState<string|"">(institue?.endpoints[0]?.name || "");
+  const [selectedEndpoint, setSelectedEndpoint] = useState<string|"">(institue?.endpoints[0]?.name || "");
+  const [dynamicRequestParamsObj, setDynamicRequestParamsObj] = useState<Prisma.RequestParamGetPayload<{select:{id:true,key:true,value:true}}> |null>(null);
   return (
     <div className="p-5">
       <div className="overflow-hidden rounded-3xl bg-gradient-to-r from-gray-600 via-cyan-950 to-blue-950 p-8 text-white">
@@ -141,7 +143,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
 
             <h2 className="text-3xl font-bold">{institue?.name}</h2>
             <p className="max-w-[600px] text-white/80">
-              Lütfen sorgulama yapacağınız servisi seçiniz
+              Lütfen sorgulama yapacağınız servisi seçiniz 
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
@@ -168,14 +170,15 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                   <DropdownMenuLabel>Servis İsmi</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuRadioGroup
-                    value={position}
-                    onValueChange={setPosition}
+                    value={selectedEndpoint}
+                    onValueChange={setSelectedEndpoint}
                   >
 
 
                     {
                       institue?.endpoints.map((endpoint) => (
                         <DropdownMenuRadioItem
+                        id={endpoint.id.toString()}
                           key={endpoint.id}
                           value={endpoint.name}
                         >
