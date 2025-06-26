@@ -43,6 +43,6 @@ export async function GET(req: NextRequest) {
    
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "API hatası. (api/getStatus" });
+    return NextResponse.json({ error: "API hatası. (api/getStatus)" });
   }
 }

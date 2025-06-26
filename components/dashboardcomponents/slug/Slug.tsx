@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import CodeFormatter from "@/components/CodeFormatter";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -27,8 +28,6 @@ import Link from "next/link";
 type InstitutionWithAllRelations = Prisma.InstitutionGetPayload<{
   include: { endpoints: { include: { headers: true; requestParams: true } } };
 }>;
-
-
 
 const getInstitue = async (id: number) => {
   try {
@@ -65,11 +64,8 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
         const sonuc = await getInstitue(singleInstitutionId);
 
         setInstitue(sonuc);
-        
-        
-        setSelectedEndpoint(sonuc.endpoints[0]?.name || "");
-        
-        
+
+        setSelectedEndpoint(sonuc.endpoints[1]?.name || "");
       } catch (error) {
         console.error("Kurum bilgisi alınırken hata oluştu:", error);
       }
@@ -78,7 +74,8 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
     getInstitueFromMethod();
   }, []);
 
-  useEffect(() => { // hello bilgisi alınıyor
+  useEffect(() => {
+    // hello bilgisi alınıyor
     const getStatus = async () => {
       setLoading(true);
       try {
@@ -96,7 +93,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
         }
 
         setStatus(data.sonuc.success);
-      
+
         setLoading(false);
       } catch (error) {
         console.error("Veriler getirilirken hata oluştu.", error);
@@ -107,8 +104,11 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
     getStatus();
   }, [renew]);
 
-  const [selectedEndpoint, setSelectedEndpoint] = useState<string|"">(institue?.endpoints[0]?.name || "");
-  const [dynamicRequestParamsObj, setDynamicRequestParamsObj] = useState<Prisma.RequestParamGetPayload<{select:{id:true,key:true,value:true}}> |null>(null);
+  const [selectedEndpoint, setSelectedEndpoint] = useState<string | "">(
+    institue?.endpoints[1]?.name || ""
+  );
+  const [handleInputChange, setHandleInputChange] = useState({});
+
   return (
     <div className="p-5">
       <div className="overflow-hidden rounded-3xl bg-gradient-to-r from-gray-600 via-cyan-950 to-blue-950 p-8 text-white">
@@ -143,7 +143,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
 
             <h2 className="text-3xl font-bold">{institue?.name}</h2>
             <p className="max-w-[600px] text-white/80">
-              Lütfen sorgulama yapacağınız servisi seçiniz 
+              Lütfen sorgulama yapacağınız servisi seçiniz
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
@@ -162,6 +162,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                   <Button
                     className="rounded-2xl bg-transparent border-white text-white hover:bg-white/10"
                     variant="outline"
+                    disabled={!institue || institue.endpoints.length - 1 === 0}
                   >
                     Servis Seçimi
                   </Button>
@@ -171,21 +172,22 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                   <DropdownMenuSeparator />
                   <DropdownMenuRadioGroup
                     value={selectedEndpoint}
-                    onValueChange={setSelectedEndpoint}
+                    onValueChange={(value) => {
+                      setSelectedEndpoint(value);
+                      setHandleInputChange({});
+                    }}
                   >
-
-
-                    {
-                      institue?.endpoints.map((endpoint) => (
+                    {institue?.endpoints
+                      .filter((ep) => ep.name.toLowerCase() !== "hello")
+                      .map((endpoint) => (
                         <DropdownMenuRadioItem
-                        id={endpoint.id.toString()}
+                          id={endpoint.id.toString()}
                           key={endpoint.id}
                           value={endpoint.name}
                         >
                           {endpoint.name}
                         </DropdownMenuRadioItem>
-                      ))
-                    }
+                      ))}
                     {/* <DropdownMenuRadioItem value={position}>
                       {position}
                     </DropdownMenuRadioItem>
@@ -208,18 +210,113 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
           <CardContent className="space-y-4">
             <div className="flex flex-row gap-6 w-full justify-between">
               <div className="flex flex-col gap-2 w-1/3 justify-between">
-                <div className="space-y-2">
-                  <Label htmlFor="query-type">Ülke Kodu</Label>
-                  <Input name="query-type" defaultValue="" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="query-t">Pasaport Numarası</Label>
-                  <Input name="query-t" defaultValue="" />
-                </div>
-                <Button variant="success" className="w-full ">
-                  <Play className="mr-2 h-4 w-4" />
-                  Sorgu Başlat
-                </Button>
+                {institue?.endpoints
+                  .filter(
+                    (endpoint) =>
+                      endpoint.name.toLowerCase() ===
+                      selectedEndpoint.toLowerCase()
+                  )
+                  .map((endpoint) =>
+                    endpoint.requestParams.map((param) =>
+                      param.value === "STRING" ? (
+                        <div className="space-y-2" key={param.id}>
+                          <Label htmlFor={`${param.key}`}>
+                            {param.keyLabel}
+                          </Label>
+                          <Input
+                            onChange={(e) =>
+                              setHandleInputChange((prev: any) => ({
+                                ...prev,
+                                [param.key]: e.target.value,
+                              }))
+                            }
+                            type="text"
+                            name={`${param.key}`}
+                            defaultValue=""
+                          />
+                        </div>
+                      ) : param.value === "NUMBER" ? (
+                        <div className="space-y-2" key={param.id}>
+                          <Label htmlFor={`${param.key}`}>
+                            {param.keyLabel}
+                          </Label>
+                          <Input
+                            onChange={(e) =>
+                              setHandleInputChange((prev: any) => ({
+                                ...prev,
+                                [param.key]: Number(e.target.value),
+                              }))
+                            }
+                            type="number"
+                            name={`${param.key}`}
+                            defaultValue=""
+                          />
+                        </div>
+                      ) : param.value === "BOOLEAN" ? (
+                        <div className="space-y-2" key={param.id}>
+                          <Label htmlFor={`${param.key}`}>
+                            {param.keyLabel}
+                          </Label>
+                          <Input
+                          onChange={(e) =>
+                              setHandleInputChange((prev: any) => ({
+                                ...prev,
+                                [param.key]: e.target.checked,
+                              }))
+                            }
+                            type="checkbox"
+                            name={`${param.key}`}
+                            
+                            
+                          />
+                        </div>
+                      ):param.value === "DATE" ? (
+                        <div className="space-y-2" key={param.id}>
+                          <Label htmlFor={`${param.key}`}>
+                            {param.keyLabel}
+                          </Label>
+                          <Input
+                            onChange={(e) =>
+                              setHandleInputChange((prev: any) => ({
+                                ...prev,
+                                [param.key]: e.target.value,
+                              }))
+                            }
+                            type="date"
+                            name={`${param.key}`}
+                            defaultValue=""
+                          />
+                        </div>
+                      ) :param.value === "DATELOCAL" ? (
+                        <div className="space-y-2" key={param.id}>
+                          <Label htmlFor={`${param.key}`}>
+                            {param.keyLabel}
+                          </Label>
+                          <Input
+                            onChange={(e) =>
+                              setHandleInputChange((prev: any) => ({
+                                ...prev,
+                                [param.key]: e.target.value,
+                              }))
+                            }
+                            type="datetime-local"
+                            name={`${param.key}`}
+                            defaultValue=""
+                          />
+                        </div>
+                      ): (
+                        ""
+                      )
+                    )
+                  )}
+                {institue && institue.endpoints.length - 1 > 0 ? (
+                  <Button variant="success" className="w-full ">
+                    <Play className="mr-2 h-4 w-4" />
+                    Sorgu Başlat
+                  </Button>
+                ) : (
+                  "Servis bulunamadı"
+                )}
               </div>
               <Separator
                 orientation="vertical"
@@ -231,7 +328,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                   <Info className="h-4 w-4" />
                   <AlertDescription>Postman Önizlemesi</AlertDescription>
                 </Alert>
-                <CodeFormatter jsonString='{"deneme":"hello", "isAlive":true}' />
+                <CodeFormatter jsonString={JSON.stringify(handleInputChange)} />
               </div>
               <div></div>
             </div>

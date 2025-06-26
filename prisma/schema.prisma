@@ -23,6 +23,7 @@ enum ValueEnum {
   NUMBER
   BOOLEAN
   DATE
+  DATELOCAL
   OBJECT
 }
 
@@ -63,8 +64,10 @@ model Endpoint {
 
 model Header {
   id            Int                @id @default(autoincrement())
-  headerkey     String
+  headerkey     String             
+
   headervalue   String
+  
   endpointId    Int
   endpoint      Endpoint           @relation(fields: [endpointId], references: [id])
 }
@@ -72,7 +75,9 @@ model Header {
 model RequestParam {
   id            Int                @id @default(autoincrement())
   key           String
+  keyLabel      String
   value         ValueEnum
+  
   endpointId    Int
   endpoint      Endpoint           @relation(fields: [endpointId], references: [id])
 }
