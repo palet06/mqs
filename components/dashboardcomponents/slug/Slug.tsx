@@ -29,6 +29,29 @@ type InstitutionWithAllRelations = Prisma.InstitutionGetPayload<{
   include: { endpoints: { include: { headers: true; requestParams: true } } };
 }>;
 
+const sendRequest = async (id: number, header: any[], url:string, params: any) => {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/sendRequest?institutionId=${id}&params=${JSON.stringify(params)}&header=${JSON.stringify(
+        header
+      )}&url=${url}`,
+      { method: "GET", cache: "no-cache" }
+    );
+    const son = await response.json();
+    if (!son.apiSuccess) {
+      throw new Error("Ağ hatası");
+    }
+    console.log(son.institue as typeof son)
+    return son.institue as typeof son;
+
+  } catch (error) {
+    console.error(
+      "API den gelen response verisi getirilirken hata oluştu:",
+      error
+    );
+  }
+};
+
 const getInstitue = async (id: number) => {
   try {
     const response = await fetch(
@@ -258,7 +281,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                             {param.keyLabel}
                           </Label>
                           <Input
-                          onChange={(e) =>
+                            onChange={(e) =>
                               setHandleInputChange((prev: any) => ({
                                 ...prev,
                                 [param.key]: e.target.checked,
@@ -266,11 +289,9 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                             }
                             type="checkbox"
                             name={`${param.key}`}
-                            
-                            
                           />
                         </div>
-                      ):param.value === "DATE" ? (
+                      ) : param.value === "DATE" ? (
                         <div className="space-y-2" key={param.id}>
                           <Label htmlFor={`${param.key}`}>
                             {param.keyLabel}
@@ -287,7 +308,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                             defaultValue=""
                           />
                         </div>
-                      ) :param.value === "DATELOCAL" ? (
+                      ) : param.value === "DATELOCAL" ? (
                         <div className="space-y-2" key={param.id}>
                           <Label htmlFor={`${param.key}`}>
                             {param.keyLabel}
@@ -304,13 +325,24 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                             defaultValue=""
                           />
                         </div>
-                      ): (
+                      ) : (
                         ""
                       )
                     )
                   )}
                 {institue && institue.endpoints.length - 1 > 0 ? (
-                  <Button variant="success" className="w-full ">
+                  <Button
+                    variant="success"
+                    className="w-full"
+                    onClick={() =>
+                      sendRequest(
+                        institue?.id,
+                        institue.endpoints.find((ep) => ep.name === selectedEndpoint)?.headers as [],
+                        institue.endpoints.find((ep) => ep.name === selectedEndpoint)?.url || "",
+                        handleInputChange
+                      )
+                    }
+                  >
                     <Play className="mr-2 h-4 w-4" />
                     Sorgu Başlat
                   </Button>

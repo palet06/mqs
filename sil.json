@@ -1,0 +1,26 @@
+[
+    {
+        "id": 17,
+        "headerkey": "Accept",
+        "headervalue": "*/*",
+        "endpointId": 6
+    },
+    {
+        "id": 18,
+        "headerkey": "Accept-Encoding",
+        "headervalue": "gzip, deflate, br",
+        "endpointId": 6
+    },
+    {
+        "id": 19,
+        "headerkey": "User-Agent",
+        "headervalue": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
+        "endpointId": 6
+    },
+    {
+        "id": 28,
+        "headerkey": "ApiKey",
+        "headervalue": "r89bgtws-t4l6-25ot-sz844-9833ne684527",
+        "endpointId": 6
+    }
+]
