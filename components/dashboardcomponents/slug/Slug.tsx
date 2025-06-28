@@ -52,7 +52,7 @@ const sendRequest = async (
       },
       body: JSON.stringify({
         institutionId: id,
-        params: JSON.stringify(params),       
+        params: JSON.stringify(params),
         header: JSON.stringify(header),
         url: url,
       }),
@@ -62,9 +62,16 @@ const sendRequest = async (
     if (!son.apiSuccess) {
       throw new Error("Ağ hatası");
     }
-    console.log("sendrequest metodu gelen veri", son.sonuc.data);
 
-    return son.sonuc.data;
+    if (!son.sonuc.success) {
+      return son;
+
+      //throw new Error(son.sonuc.message + " :: " + son.sonuc.errorDetails.errorType);
+    }
+
+    console.log("sendrequest metodu gelen veri", son);
+
+    return son;
   } catch (error) {
     console.error(
       "API den gelen response verisi getirilirken hata oluştu:",
@@ -102,6 +109,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [renew, setRenew] = useState<boolean>(false);
   const [result, setResult] = useState({});
+  const [error, setError] = useState<string | null>(null);
   const [selectedEndpoint, setSelectedEndpoint] = useState<string | "">(
     institue?.endpoints[1]?.name || ""
   );
@@ -219,6 +227,8 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                     onValueChange={(value) => {
                       setSelectedEndpoint(value);
                       setHandleInputChange({});
+                      setResult({});
+                      setError(null);
                     }}
                   >
                     {institue?.endpoints
@@ -253,7 +263,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
 
           <CardContent className="space-y-4">
             <div className="flex flex-row gap-6 w-full justify-between">
-              <div className="flex flex-col gap-2 w-1/3 justify-between">
+              <div className="flex flex-col gap-2 w-1/3 justify-start">
                 {institue?.endpoints
                   .filter(
                     (endpoint) =>
@@ -368,8 +378,17 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                       );
                       console.log("buton verisi", sendRequestObj);
 
-                      if (sendRequestObj) {
-                        setResult(sendRequestObj);
+                      if (sendRequestObj.sonuc.success === true) {
+                        setResult(sendRequestObj.sonuc.data);
+                        setError(null);
+                      }
+                      if (sendRequestObj.sonuc.success === false) {
+                        setResult({});
+                        setError(
+                          sendRequestObj.sonuc.message +
+                            " :: " +
+                            sendRequestObj.sonuc.errorDetails.errorType
+                        );
                       }
                     }}
                   >
@@ -386,19 +405,44 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
               />
 
               <div className="flex flex-col gap-2 w-2/3 ">
-                <Alert className="w-full" variant="default">
-                  <Info className="h-4 w-4" />
-                  <AlertDescription>Postman Önizlemesi</AlertDescription>
-                </Alert>
-                <CodeFormatter jsonString={JSON.stringify(handleInputChange)} />
                 <Accordion
-                  className="border rounded-xs"
-                  type="single"
-                  collapsible
+                  defaultValue={["item-1"]}
+                  className="border p-0 [&_button]:items-center"
+                  type="multiple"
                 >
                   <AccordionItem value="item-1">
-                    <AccordionTrigger>JSON Sonuç</AccordionTrigger>
-                    <AccordionContent>
+                    <AccordionTrigger defaultChecked>
+                      <Alert className="w-full border-0" variant="default">
+                        <Info className="h-4 w-4" />
+                        <AlertDescription>Postman Önizlemesi</AlertDescription>
+                      </Alert>
+                    </AccordionTrigger>
+                    <AccordionContent className="p-3">
+                      <CodeFormatter
+                        jsonString={JSON.stringify(handleInputChange)}
+                      />
+                      {error ? (
+                        <Alert
+                          className="w-full mt-2 border-0"
+                          variant="destructive"
+                        >
+                          <Info className="h-4 w-4" />
+                          <AlertDescription>{error}</AlertDescription>
+                        </Alert>
+                      ) : null}
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem
+                    hidden={Object.keys(result).length === 0}
+                    value="item-2"
+                  >
+                    <AccordionTrigger>
+                      <Alert className="w-full border-0" variant="default">
+                        <Info className="h-4 w-4" />
+                        <AlertDescription>JSON Sonuç</AlertDescription>
+                      </Alert>
+                    </AccordionTrigger>
+                    <AccordionContent className="p-3">
                       <CodeFormatter jsonString={JSON.stringify(result)} />
                     </AccordionContent>
                   </AccordionItem>
