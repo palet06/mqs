@@ -37,8 +37,6 @@ type InstitutionWithAllRelations = Prisma.InstitutionGetPayload<{
   include: { endpoints: { include: { headers: true; requestParams: true } } };
 }>;
 
-
-
 const sendRequest = async (
   id: number,
   header: any[],
@@ -46,19 +44,26 @@ const sendRequest = async (
   params: any
 ) => {
   try {
-    const response = await fetch(
-      `http://localhost:3000/api/sendRequest?institutionId=${id}&params=${JSON.stringify(
-        params
-      )}&header=${JSON.stringify(header)}&url=${url}`,
-      { method: "GET", cache: "no-cache" }
-    );
+    const response = await fetch(`http://localhost:3000/api/sendRequest`, {
+      method: "POST",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        institutionId: id,
+        params: JSON.stringify(params),       
+        header: JSON.stringify(header),
+        url: url,
+      }),
+    });
     const son = await response.json();
-    
+
     if (!son.apiSuccess) {
       throw new Error("Ağ hatası");
     }
-    console.log("sendrequest metodu gelen veri",son.sonuc.data)
-    
+    console.log("sendrequest metodu gelen veri", son.sonuc.data);
+
     return son.sonuc.data;
   } catch (error) {
     console.error(
@@ -147,8 +152,6 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
 
     getStatus();
   }, [renew]);
-
-  
 
   return (
     <div className="p-5">
@@ -352,8 +355,8 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                   <Button
                     variant="success"
                     className="w-full"
-                    onClick={async () =>
-                     {const sendRequestObj = await sendRequest(
+                    onClick={async () => {
+                      const sendRequestObj = await sendRequest(
                         institue?.id,
                         institue.endpoints.find(
                           (ep) => ep.name === selectedEndpoint
@@ -362,15 +365,13 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                           (ep) => ep.name === selectedEndpoint
                         )?.url || "",
                         handleInputChange
-                      )
-                      console.log("buton verisi",sendRequestObj)
+                      );
+                      console.log("buton verisi", sendRequestObj);
 
                       if (sendRequestObj) {
                         setResult(sendRequestObj);
                       }
-
-                    }
-                    }
+                    }}
                   >
                     <Play className="mr-2 h-4 w-4" />
                     Sorgu Başlat
@@ -390,11 +391,15 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                   <AlertDescription>Postman Önizlemesi</AlertDescription>
                 </Alert>
                 <CodeFormatter jsonString={JSON.stringify(handleInputChange)} />
-                <Accordion className="border rounded-xs" type="single" collapsible>
+                <Accordion
+                  className="border rounded-xs"
+                  type="single"
+                  collapsible
+                >
                   <AccordionItem value="item-1">
                     <AccordionTrigger>JSON Sonuç</AccordionTrigger>
-                    <AccordionContent >
-                      <CodeFormatter   jsonString={JSON.stringify(result)} />
+                    <AccordionContent>
+                      <CodeFormatter jsonString={JSON.stringify(result)} />
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
@@ -406,18 +411,16 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
         </Card>
       </div>
       <div className="pt-6">
-        {
-          
-          !result ? (
-            <Alert className="w-full" variant="destructive">
-              <Info className="h-4 w-4" />
-              <AlertDescription>
-                Sorgu sonucu bulunamadı. Lütfen sorguyu kontrol edin.
-              </AlertDescription>
-            </Alert>
-          ) : <DynamicDataTable data={Array.isArray(result) ? result : [result]} />
-        }
-      
+        {!result ? (
+          <Alert className="w-full" variant="destructive">
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              Sorgu sonucu bulunamadı. Lütfen sorguyu kontrol edin.
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <DynamicDataTable data={Array.isArray(result) ? result : [result]} />
+        )}
       </div>
     </div>
   );
