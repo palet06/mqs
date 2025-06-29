@@ -97,7 +97,7 @@ const getInstitue = async (id: number) => {
 
     return son.institue as typeof son;
   } catch (error) {
-    console.error("Kurumlar getirilirken hata oluştu:", error);
+    console.error("Tekil kurum bilgileri getirilirken hata oluştu:", error);
   }
 };
 
