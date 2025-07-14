@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { parseISO, format } from "date-fns";
