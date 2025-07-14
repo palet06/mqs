@@ -1,34 +1,35 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { prisma } from "@/lib/SingletonPrisma";
 import { NextRequest, NextResponse } from "next/server";
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
+
+export async function POST(req: NextRequest) {
+
+  const body = await req.json();
+   const { params, header, url} = body
   //const institutionId = searchParams.get("institutionId");
 
-  const paramsstring = searchParams.get("params");
-  const params:any = paramsstring ? JSON.parse(paramsstring):{};
+  const paramsstring = params
+  const paramSSS:any = paramsstring ? JSON.parse(paramsstring):{};
 
   
-  const headerString = searchParams.get("header");
-  const header: any[] = headerString ? JSON.parse(headerString) : [];
-  const url = searchParams.get("url");
+  const headerString = header
+  const headeRRR: any[] = headerString ? JSON.parse(headerString) : [];
+  const urLLL = url
   try {
-    const headersObj = header.reduce((acc, curr) => {
+    const headersObj = headeRRR.reduce((acc, curr) => {
       acc[curr.headerkey] = curr.headervalue;
       return acc;
     }, {} as Record<string, string>);
 
     
 
-    console.log("headerobj nesnesi",headersObj)
-    console.log("params",params)
-    
 
     const baseUrl = await prisma.base.findMany();
-    const response = await fetch(`${baseUrl[0].baseUrl}/${url}`, {
+    const response = await fetch(`${baseUrl[0].baseUrl}/${urLLL}`, {
       method: "POST",
       cache: "no-cache",
       headers: headersObj,
-      body: JSON.stringify(params),
+      body: JSON.stringify(paramSSS),
     });
 
     const sonuc = await response.json();

@@ -44,20 +44,34 @@ const sendRequest = async (
   params: any
 ) => {
   try {
-    const response = await fetch(
-      `http://localhost:3000/api/sendRequest?institutionId=${id}&params=${JSON.stringify(
-        params
-      )}&header=${JSON.stringify(header)}&url=${url}`,
-      { method: "GET", cache: "no-cache" }
-    );
+    const response = await fetch(`http://localhost:3000/api/sendRequest`, {
+      method: "POST",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        institutionId: id,
+        params: JSON.stringify(params),
+        header: JSON.stringify(header),
+        url: url,
+      }),
+    });
     const son = await response.json();
 
     if (!son.apiSuccess) {
       throw new Error("Ağ hatası");
     }
-    console.log("sendrequest metodu gelen veri", son.sonuc.data);
 
-    return son.sonuc.data;
+    if (!son.sonuc.success) {
+      return son;
+
+      //throw new Error(son.sonuc.message + " :: " + son.sonuc.errorDetails.errorType);
+    }
+
+    console.log("sendrequest metodu gelen veri", son);
+
+    return son;
   } catch (error) {
     console.error(
       "API den gelen response verisi getirilirken hata oluştu:",
@@ -83,7 +97,7 @@ const getInstitue = async (id: number) => {
 
     return son.institue as typeof son;
   } catch (error) {
-    console.error("Kurumlar getirilirken hata oluştu:", error);
+    console.error("Tekil kurum bilgileri getirilirken hata oluştu:", error);
   }
 };
 
@@ -97,6 +111,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
 
   const [renew, setRenew] = useState<boolean>(false);
   const [result, setResult] = useState({});
+  const [error, setError] = useState<string | null>(null);
   const [selectedEndpoint, setSelectedEndpoint] = useState<string | "">(
     institue?.endpoints[1]?.name || ""
   );
@@ -215,6 +230,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                       setSelectedEndpoint(value);
                       setHandleInputChange({});
                       setResult({});
+                      setError(null);
                     }}
                   >
                     {institue?.endpoints
@@ -249,7 +265,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
 
           <CardContent className="space-y-4">
             <div className="flex flex-row gap-6 w-full justify-between">
-              <div className="flex flex-col gap-5 w-1/3 justify-baseline">
+              <div className="flex flex-col gap-2 w-1/3 justify-start">
                 {institue?.endpoints
                   .filter(
                     (endpoint) =>
@@ -352,10 +368,14 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                     disabled={
                       loadingQuery ||
                       (() => {
-                        const endpoint = institue?.endpoints?.find((a) => a.name === selectedEndpoint);
+                        const endpoint = institue?.endpoints?.find(
+                          (a) => a.name === selectedEndpoint
+                        );
                         return (
                           Object.keys(handleInputChange).length <
-                          (endpoint && endpoint.requestParams ? endpoint.requestParams.length : 0)
+                          (endpoint && endpoint.requestParams
+                            ? endpoint.requestParams.length
+                            : 0)
                         );
                       })()
                     }
@@ -375,17 +395,31 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                           handleInputChange
                         );
 
-                        if (sendRequestObj) {
-                          setResult(sendRequestObj);
+                        if (sendRequestObj.sonuc.success === true) {
+                          setResult(sendRequestObj.sonuc.data);
+                          setError(null);
                           setLoadingQuery(false)
                         }
+                        if (sendRequestObj.sonuc.success === false) {
+                          setResult({});
+                           setLoadingQuery(false)
+                          setError(
+                            sendRequestObj.sonuc.message +
+                              " :: " +
+                              sendRequestObj.sonuc.errorDetails.errorType
+                          );
+                        }
                       } catch (error) {
-                        console.log("sorgulama yaparken hata oluştu",error)
-                        setLoadingQuery(false)
+                        console.log("bir hata oluştu", error);
+                         setLoadingQuery(false)
                       }
                     }}
                   >
-                    <Play className={`mr-2 h-4 w-4 ${loadingQuery?"animate-caret-blink":""}`} />
+                    <Play
+                      className={`mr-2 h-4 w-4 ${
+                        loadingQuery ? "animate-caret-blink" : ""
+                      }`}
+                    />
                     Sorgu Başlat
                   </Button>
                 ) : (
@@ -398,19 +432,44 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
               />
 
               <div className="flex flex-col gap-2 w-2/3 ">
-                <Alert className="w-full" variant="default">
-                  <Info className="h-4 w-4" />
-                  <AlertDescription>Postman Önizlemesi</AlertDescription>
-                </Alert>
-                <CodeFormatter jsonString={JSON.stringify(handleInputChange)} />
                 <Accordion
-                  className="border rounded-xs"
-                  type="single"
-                  collapsible
+                  defaultValue={["item-1"]}
+                  className="border p-0 [&_button]:items-center"
+                  type="multiple"
                 >
                   <AccordionItem value="item-1">
-                    <AccordionTrigger>JSON Sonuç</AccordionTrigger>
-                    <AccordionContent>
+                    <AccordionTrigger defaultChecked>
+                      <Alert className="w-full border-0" variant="default">
+                        <Info className="h-4 w-4" />
+                        <AlertDescription>Postman Önizlemesi</AlertDescription>
+                      </Alert>
+                    </AccordionTrigger>
+                    <AccordionContent className="p-3">
+                      <CodeFormatter
+                        jsonString={JSON.stringify(handleInputChange)}
+                      />
+                      {error ? (
+                        <Alert
+                          className="w-full mt-2 border-0"
+                          variant="destructive"
+                        >
+                          <Info className="h-4 w-4" />
+                          <AlertDescription>{error}</AlertDescription>
+                        </Alert>
+                      ) : null}
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem
+                    hidden={Object.keys(result).length === 0}
+                    value="item-2"
+                  >
+                    <AccordionTrigger>
+                      <Alert className="w-full border-0" variant="default">
+                        <Info className="h-4 w-4" />
+                        <AlertDescription>JSON Sonuç</AlertDescription>
+                      </Alert>
+                    </AccordionTrigger>
+                    <AccordionContent className="p-3">
                       <CodeFormatter jsonString={JSON.stringify(result)} />
                     </AccordionContent>
                   </AccordionItem>
