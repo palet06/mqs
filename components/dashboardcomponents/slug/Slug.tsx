@@ -309,11 +309,19 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                           />
                         </div>
                       ) : param.value === "BOOLEAN" ? (
-                        <div className="space-y-2" key={param.id}>
-                          <Label htmlFor={`${param.key}`}>
+                        <div
+                          className="space-y-2 grid grid-cols-3"
+                          key={param.id}
+                        >
+                          <Label
+                            className="col-span-1"
+                            htmlFor={`${param.key}`}
+                          >
                             {param.keyLabel}
                           </Label>
                           <Input
+                            className="size-4 col-span-2"                            
+                           
                             onChange={(e) =>
                               setHandleInputChange((prev: any) => ({
                                 ...prev,
@@ -383,7 +391,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                     className="w-full"
                     onClick={async () => {
                       try {
-                        setLoadingQuery(true)
+                        setLoadingQuery(true);
                         const sendRequestObj = await sendRequest(
                           institue?.id,
                           institue.endpoints.find(
@@ -398,11 +406,11 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                         if (sendRequestObj.sonuc.success === true) {
                           setResult(sendRequestObj.sonuc.data);
                           setError(null);
-                          setLoadingQuery(false)
+                          setLoadingQuery(false);
                         }
                         if (sendRequestObj.sonuc.success === false) {
                           setResult({});
-                           setLoadingQuery(false)
+                          setLoadingQuery(false);
                           setError(
                             sendRequestObj.sonuc.message +
                               " :: " +
@@ -411,7 +419,7 @@ const Slug = ({ singleInstitutionId }: { singleInstitutionId: number }) => {
                         }
                       } catch (error) {
                         console.log("bir hata oluştu", error);
-                         setLoadingQuery(false)
+                        setLoadingQuery(false);
                       }
                     }}
                   >
